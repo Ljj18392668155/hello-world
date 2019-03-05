@@ -1,0 +1,41 @@
+#ifndef _STU_H_
+#define _STU_H_
+class Stu
+{
+protected:
+	char m_Name[11];
+	char m_Sex[3];
+	char m_Born[12];
+	int m_EngGrade;
+	int m_DataGrade;
+	char *m_Rem;
+	unsigned int m_RemBytes;
+
+protected:
+	
+public:
+	Stu();//默认构造函数
+	/*Stu(char* Name = "LiJingJing", char* Sex = "女", char* Born = "1997.02.24", int EngGrade = 90, int DataGrade = 90, char* Rem, unsigned int RemBytes = 0);
+	//带参构造函数省略*/
+	~Stu();//析构函数,不用自己调用，对象周期结束自动调用
+	Stu(const Stu &s);//拷贝构造函数，这里是将对象s拷到目标对象中，也不用人工调用
+	
+	
+	void Show();
+	unsigned int GetRemBytes();
+	bool SetName(char *Name);//名字
+	char *GetName();
+	bool SetSex(char *Sex);//性别
+	char *GetSex();
+	bool SetBorn(char *Born);
+	char *GetBorn();
+	bool SetEngGrade(int EngGrade);
+	int GetEngGrade();
+	bool SetDataGrade(int DataGrade);
+	int GetDataGrade();
+	bool SetRem(char *Rem);
+	char *GetRem();
+
+};
+#endif
+////////////////////////////////////////////////////

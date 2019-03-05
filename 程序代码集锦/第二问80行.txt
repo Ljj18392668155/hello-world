@@ -1,0 +1,80 @@
+
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+typedef unsigned short  uint16;
+typedef   signed short  sint16;
+
+// 棋盘的最大行列数目
+#define MAX_X   13
+#define MAX_Y   17
+
+// 尝试的最大可能性 只有5种
+#define MAX_SCH 5
+
+// 最大的棋盘的数据结构   三维数组
+uint16 chessboard[MAX_Y][MAX_X];
+
+void out_chessboard(void) {             // 打印出棋盘
+    sint16 x,y;
+
+    printf("    ");
+    for (x=0;x<MAX_X;x++) {
+        printf("%4d",(x+1)%10);
+    }
+    printf("\n\r");                     // 打印横坐标
+    for (y=0;y<MAX_Y;y++) {
+        printf("%2d: ",y+1);            // 打印纵坐标
+        for (x=0;x<MAX_X;x++) {
+            printf("%4d",chessboard[y][x]);
+        }
+        printf("\n\r");
+    }
+}
+
+uint16 exe_chessboard(uint16 sch) {     // 从棋盘取子
+    sint16 x0,y0;
+    sint16 x,y;
+    uint16 sum;
+
+    sum=0;                              // 去除棋子的计数器
+
+    x0=sch-5;
+    y0=0;
+
+    y=y0;
+    while (y<MAX_Y) {
+        x=x0;
+        while (x<MAX_X) {
+            if (x>=0) {
+                chessboard[y][x]=1;
+                sum++;                  // 去除棋子的计数器加一
+            }
+            x+=5;                       // 在这一行内 每隔5个棋子去除一个
+        }
+        y+=1;                           // 移到下一行
+        x0-=3;
+    }
+
+    return sum;                         // 去除棋子的个数
+}
+
+void main(void) {
+    uint16 sum;
+    uint16 sch;                         // 取出的棋子的位置  只能为 (0,0) (1,0) (2,0) (3,0) (4,0) 五种可能
+
+
+
+    for (sch=0;sch<MAX_SCH;sch++) {
+        // 将棋盘全部放上棋子 以0表示棋子
+        memset(chessboard,0,sizeof(chessboard));
+        // 去除棋子
+        sum=exe_chessboard(sch);
+        //打印棋盘布局示意图
+        out_chessboard();
+        //报告去除棋子的数目
+        printf("removed piece sum=%d\n\r",sum);
+    }
+
+}

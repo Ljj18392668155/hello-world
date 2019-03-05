@@ -1,0 +1,573 @@
+#include<stdio.h>
+#include<stdlib.h>
+#include<string.h>
+#include<io.h>
+#include<conio.h>
+struct pwapp
+{char user[6];
+ char psw[6];
+}m[10];
+struct book
+{      long num;      
+        char name[20];     
+        char date[15];    
+        char type[20];    
+        char adress[20]; 
+        int price; 
+        int count;   
+        struct book *next;
+};
+ count_inf(struct book *p )
+{	char name[20];
+	char type[20];
+	int choice,i=0;
+	printf("       \n\n\n请输入按什么统计\n\n\n");
+	printf("                 1.类型  \n\n");
+	printf("                  2.书名\n\n");
+	printf("                    3.类型和书名\n\n\n\n");
+	scanf("%d",&choice);
+	switch(choice)
+	{	case 1: printf("           请输入书本类型\n\n");
+				scanf("%s",type);
+				while(p->next!=NULL)
+					{	p=p->next;
+						if(strcmp(type,p->type)==0)
+						{  
+							i++;	
+						}
+					}
+				printf("     书本类型                         数量\n\n");
+				printf("      %s                               %d",type,i);
+				break;
+    	case 2: printf("           请输入书本名称\n\n");
+				scanf("%s",name);
+				while(p->next!=NULL)
+					{	p=p->next;
+						if(strcmp(name,p->name)==0)
+						{  
+							i++;	
+						}
+					}
+				printf("     书本名称                      数量\n\n");
+				printf("      %s                            %d",name,i);
+				break;
+		case 3:  printf("           请输入书本类型\n\n");
+				scanf("%s",type);
+				printf("           请输入书本名称\n\n");
+				scanf("%s",name);
+				while(p->next!=NULL)
+					{	p=p->next;
+						if(strcmp(name,p->name)==0&&strcmp(type,p->type)==0)
+						{  
+							i++;	
+						}
+					}
+				printf("     书本名称           书本类型                  数量\n\n");
+				printf("      %s                  %s                        %d",name,type,i);
+				break;
+	
+	
+	}
+	
+
+
+
+
+}
+find_inf(struct book *r)
+{	struct book *p;
+    long num;
+	char name[20];
+    
+	int i=1,choice;
+	while(i==1)
+	{   p=r;
+		 system("cls");
+		printf("\n\n\n\n\n                   请输入要查找的\n\n                        1.编号\n\n");
+		printf("                           2.书名\n\n");
+		printf("                             3.编号和书名\n\n\n");
+		scanf("%d",&choice);
+		switch(choice)
+		{ case 1 :  system("cls");
+					printf("\n\n\n               请输入编号\n\n\n ") ;
+				    scanf("%ld",&num);
+				
+					while(p->next!=NULL)
+					{	p=p->next;
+						if(num==p->num)
+						{  
+							printf("\n\n    编号     书名     出版日期    书本类型    出版社   价格    数量\n\n");
+							printf("%6ld %10s %10s %10s %10s %7d %7d\n\n\n\n\n\n",p->num,p->name,p->date,p->type,p->adress,p->price,p->count);
+						}
+					}
+					break;
+		 case 2:    system("cls");
+					printf("        请输入书名\n\n\n ") ;
+				    scanf("%s",name);
+					while(p->next!=NULL)
+					 {p=p->next;
+						if(strcmp(name,p->name)==0)
+						{   
+							printf(" \n\n   编号     书名     出版日期    书本类型    出版社    价格     数量\n\n");
+							printf("%6ld %10s %10s %10s %10s %7d %7d\n\n\n\n\n\n",p->num,p->name,p->date,p->type,p->adress,p->price,p->count);
+						}
+					}
+					break;
+		 case 3:   system("cls");
+					printf("\n\n\n               请输入编号\n\n\n ") ;
+				    scanf("%ld",&num);
+					printf("        请输入书名\n\n\n ") ;
+				    scanf("%s",name);
+					while(p->next!=NULL)
+					 {p=p->next;
+						if(strcmp(name,p->name)==0&&num==p->num)
+						{   
+							printf(" \n\n   编号     书名     出版日期    书本类型    出版社    价格     数量\n\n");
+							printf("%6ld %10s %10s %10s %10s %7d %7d\n\n\n\n\n\n",p->num,p->name,p->date,p->type,p->adress,p->price,p->count);
+						}
+					}
+
+		}
+		printf("      是否继续?(1继续0结束) \n");
+		scanf("%d",&i);
+
+
+	}
+}
+
+save_inf(struct book *h)
+{	struct book *bk;
+	FILE *fp;	
+	if((fp=fopen("f:/a/wx.txt","wt"))==NULL)/*判断创建文件是否存在*/
+	{	printf("写文件错误，按任意键退出！");
+	
+		exit(1);
+	}
+	for(bk=h->next;bk!=NULL;bk=bk->next)
+		fprintf(fp,"%ld %s %s %s %s %d %d\n",bk->num,bk->name,bk->date,bk->type,bk->adress,bk->price,bk->count);
+	printf("\n文件成功保存任意键返回");
+	
+	fclose(fp);
+
+}
+struct book *read_inf(int *i)
+{	struct book *head,*r,*bk;
+	FILE *fp;
+	
+	if((fp=fopen("f:/a/wx.txt","rt"))==NULL)
+	{	printf("读文件错误，按任意键退出！");
+		
+		exit(1);
+	}
+	head=(struct book *)malloc(sizeof(struct book));
+	head->next=NULL;
+	r=head;
+	while(!feof(fp))/*文件未结束*/
+	{	bk=(struct book *)malloc(sizeof(struct book));
+	 if(fscanf(fp,"%ld%s%s%s%s%d%d",&bk->num,bk->name,bk->date,bk->type,bk->adress,&bk->price,&bk->count)==EOF)
+	 {   free(bk);
+	     break;
+	 
+	 }
+		r->next=bk;
+		r=bk;
+		(*i)++;
+	}
+		r->next=NULL;
+		fclose(fp);
+		printf("\n文件信息正确读出");
+	
+		return(head);
+}
+struct book *creat_inf()
+{ 
+		struct book *head,*r,*bk;
+	    int choice=1;
+		head=(struct book *)malloc(sizeof(struct book));
+		head->next=NULL;
+		r=head;
+		
+
+		while(choice==1)
+		{
+			bk=(struct book *)malloc(sizeof(struct book));
+			printf("输入编号，书名，出版日期，书本类型，出版社，价格，数量\n");
+			scanf("%ld%s%s%s%s%d%d",&bk->num,bk->name,bk->date,bk->type,bk->adress,&bk->price,&bk->count);
+            r->next=bk;
+			r=bk;
+			printf("1继续0结束");
+		    scanf("%d",&choice);
+		}
+        r->next=NULL;
+		return(head);
+}
+print_inf(struct book *h)
+{	struct book *bk;
+    printf("\n数据为：\n");
+	printf("  编号      书名     出版日期    书本类型    出版社    价格      数量\n");
+	for(bk=h->next;bk!=NULL;bk=bk->next)
+		printf("%4ld %10s %10s %10s %10s %9d %9d\n",bk->num,bk->name,bk->date,bk->type,bk->adress,bk->price,bk->count);
+
+
+}
+ sort_inf(struct book *head)
+{  struct book *p,*r,*q,*h;
+	int choice;
+	h=head;
+	printf("\n\n              请选择按编号降序还是升序\n\n");
+	printf("\n                    1.降序");
+	printf(" \n\n                   2.升序\n\n");
+	scanf("%d",&choice);
+	switch(choice)
+	{  case 1:	while(h->next!=NULL)
+				{	q=h;
+					h=h->next;
+					p=h;
+
+					while(p->next!=NULL)
+					{	p=p->next;
+						if(h->num<p->num)
+						{	r=h->next;
+							h->next=p->next;
+							p->next=q->next;
+							q->next=r;
+				
+						}
+
+					
+					}
+
+				}
+				
+			   break;
+	   case 2: while(h->next!=NULL)
+				{	q=h;
+					h=h->next;
+					p=h;
+
+					while(p->next!=NULL)
+					{	p=p->next;
+						if(h->num>p->num)
+						{	r=h->next;
+							h->next=p->next;
+							p->next=q->next;
+							q->next=r;
+				
+						}
+
+					
+					}
+
+				}
+		       break;
+	}
+	
+}
+ del_inf(struct book *r)
+{	struct book *p;
+	char num;
+	char name[20];
+    
+	int i=1,choice;
+	while(i==1)
+	{   p=r->next;
+		printf("请输入要删除的\n\n              1.编号\n\n                    2.书名\n");
+		scanf("%d",&choice);
+		switch(choice)
+		{
+		case 1:	  
+				printf("请输入编号");
+				scanf("%ld",&num);
+		        while(p!=NULL)
+				{			
+					if(num==p->num)
+					{	
+						r->next=p->next ;
+						free(p);
+						break;
+				
+					 }
+						r=p;
+						p=p->next;
+					}   break;
+        case 2:     printf("请输入书名");
+					 scanf("%s",name);
+		       	   while(p!=NULL)
+				   {
+					   if(strcmp(name,p->name)==0)
+					 {	r->next=p->next ;
+						free(p);
+						break;
+				
+					 }
+						r=p;
+						p=p->next;
+					}   break;
+
+		}
+		printf("      是否继续?(1继续0结束) \n");
+		scanf("%d",&i);
+
+
+	}
+}
+insert_inf(struct book *h)
+{	struct book *p,*r;
+    int i=1;
+	long num;
+	while(i==1)
+	{	r=h;
+		p=(struct book *)malloc(sizeof(struct book));
+		printf("\n输入要插入编号，书名，出版日期，书本类型，出版社，价格，数量\n");
+		scanf("%ld%s%s%s%s%d%d",&p->num,p->name,p->date,p->type,p->adress,&p->price,&p->count);
+		printf("\n请输入要插入位置的前一个编号\n");
+		scanf("%ld",&num);
+		while(r->next!=NULL)
+		{	r=r->next;
+			if(num==r->num)
+			{   p->next=r->next;
+				r->next=p;
+				break;
+			}
+		}
+		printf("\n输入1继续输入0结束\n");
+		scanf("%d",&i);
+	}
+
+
+
+}
+
+modidy(struct book *p)
+{	long num;
+	int choice,i=1;
+    struct book *q;
+	while(i==1)
+	{	printf("请输入要修改的书名编号");
+		scanf("%ld",&num);
+        q=p;
+		while(q->next!=NULL)
+		{	q=q->next;
+			if(q->num==num)
+			{	printf(" \n\n   编号     书名     出版日期    书本类型    出版社    价格     数量\n\n");
+				printf("%6ld %10s %10s %10s %10s %7d %7d\n\n\n\n\n\n",q->num,q->name,q->date,q->type,q->adress,q->price,q->count);
+				system("cls");
+				printf("\n                  请输入要修改的项目\n");
+				printf("\n                      1.编号\n");
+				printf("\n                      2.书名\n");
+				printf("\n                      3.出版日期\n");
+				printf("\n                      4.书本类型\n");
+				printf("\n                      5.出版社\n");
+				printf("\n                      6.价格\n");
+    			printf("\n                      7. 数量\n");
+				scanf("%d",&choice);
+				system("cls");
+				switch(choice)
+				{case 1: printf("\n                         输入修改后的编号\n");
+						 scanf("%ld",&q->num);break;
+				 case 2: printf("\n                         输入修改后的书名\n");
+						 scanf("%s",q->name);break;
+				 case 3: printf("\n                         输入修改后的出版日期\n");
+						 scanf("%s",q->date);break;
+				 case 4: printf("\n                         输入修改后的书本类型\n");
+						 scanf("%s",q->type);break;
+				 case 5: printf("\n                         输入修改后的出版社\n");
+						 scanf("%s",q->adress);break;
+				 case 6: printf("\n                         输入修改后的价格\n");
+						 scanf("%d",&q->price);break;
+				 case 7: printf("\n                         输入修改后的数量\n");
+						 scanf("%d",q->date);break;
+				
+				}
+
+			printf(" \n\n   编号     书名     出版日期    书本类型    出版社    价格     数量\n\n");
+			printf("%6ld %10s %10s %10s %10s %7d %7d\n\n\n\n\n\n",q->num,q->name,q->date,q->type,q->adress,q->price,q->count);
+				break;
+			}
+
+		}
+		printf("      是否继续?(1继续0结束) \n");
+		scanf("%d",&i);
+	}
+
+
+}
+
+
+
+pwapp()
+{	int i=1,k,j=0,choice,fno,fsize,fnum,flag1,flag2;
+	char psw[6],user[6],psw1[6];
+	FILE *fp;
+	printf ("        \n\n\n\n\n\n\n\n\n\n            *************************************\n");
+	printf ("                *              1.登陆               *\n");
+	printf ("                  *              2.注册               *\n");
+	printf ("                  *************************************\n");
+    scanf("%d",&choice);
+	switch(choice)
+	{case 1:fp=fopen("f:\\a\\b.txt","rt");
+				if(fp==NULL)
+				{printf("\n\n*****你还没有注册");
+                  exit(1);
+				}
+			fno=fileno(fp);
+            fsize=filelength(fno);
+            fnum=fsize/sizeof(struct pwapp);
+			while(j<3)
+			{	printf("请输入账号：");
+				fflush(stdin);
+				gets(user);
+				printf("请输入密码：");
+				fflush(stdin);
+				gets(psw);
+				system("cls");
+			 for(i=0;i<fnum;i++)
+			 { fread(&m[i],sizeof(struct pwapp),1,fp);
+			   if(!strcmp(m[i].user,user)) flag1=0;
+			    else flag1=1;
+			   if(!strcmp(m[i].psw,psw)) flag2=0;
+			    else flag2=1;
+			  if(flag1==0&&flag2==0) 
+			  {   fclose(fp);
+			      printf("登陆成功！\n");
+				  system("pause"); 
+				  return 1;
+                    
+			  }
+			}
+			 if(i==fnum)
+			 {printf("输入的账号或密码有误，请重新输入！");
+			  j++;
+			 }
+		}
+	        printf("连续3次输入错误，退出！\n"); 
+            system("pause");
+			exit(1);
+     case 2:fp=fopen("f:\\a\\b.txt","at+");
+		   if(fp==NULL)
+		   {printf("\n\n*****文件打开错误。按任意键退出");
+             exit(1);
+		   }
+		   while(i==1)
+		   {system("cls");
+		    printf("请输入注册账号：");
+			fflush(stdin);
+		    gets(m[0].user);
+			printf("请输入注册密码：");
+			fflush(stdin);
+		    gets(m[0].psw);
+			printf("请再次输入注册密码：");
+			 gets(psw1);
+			 if(!strcmp(m[0].psw,psw1))
+			{fwrite(&m[0],sizeof(struct pwapp),1,fp);
+		     fclose(fp);
+			 i=0;
+			}
+			 else
+			 {printf("两次密码输入不同，请重新注册！");
+			 i=1;
+			 }
+		   }
+			 printf("注册成功！\n");
+		     system("cls");
+		     break;
+			 return 1;
+	
+	}
+
+
+
+}
+main()
+{	
+	FILE *fp;
+     int choice=1,sum=0,i;
+	 struct book *head;
+	  head=read_inf(&sum);
+
+   while(choice!=0)
+   {printf ("\n\n\n\n\n\n\n                  ***********图书管理系统**********\n");
+	printf ("                  *              1.学生登录               *\n");
+	printf ("                  *              2.管理者登录             *\n");
+	printf ("                  *              0.退出            *\n");
+	printf ("                  *************************************\n");
+	scanf("%d",&choice);
+	system("cls");
+	switch(choice)
+		{	case 1:    i=1;
+						while(i!=0)
+						{	system("cls");
+						printf("\n\n\n\n\n\n\n                            1.查询功能\n");
+						printf("                            2.排序功能\n");
+						printf("                            3.统计功能\n");
+						printf("                            0.退出\n\n\n\n\n\n");
+						scanf("%d",&i);
+						system("cls");
+						
+							switch(i)
+							{case 1:  find_inf(head);break;
+							case 2:    sort_inf(head);
+									
+				                       print_inf(head);
+									   fflush(stdin);
+									   getch();
+									   break;
+							case 3:  count_inf(head);
+									 fflush(stdin);
+									 getch();
+								     break;
+							case 0:                  break;
+							}
+						}
+						break;
+			 case 2:    pwapp() ;
+						if(sum==0)
+						 {printf("             \n请输入基本库存信息\n");
+							head=creat_inf();
+							system("cls");
+						};
+					    system("cls");
+						i=1;
+						while(i!=0)
+						{
+						system("cls");
+						printf("\n\n\n\n\n\n\n                              1.查询功能\n");
+						printf("                              2.排序功能\n");
+						printf("                              3.删除功能\n");
+						printf("                              4.修改功能\n");
+						printf("                              5.添加功能\n");
+						printf("                              6.统计功能\n");
+						printf("                              0.退出\n\n\n");
+						scanf("%d",&i);
+						 system("cls");
+						switch(i)
+						{case 1:  find_inf(head);break;
+			    		case 2:   sort_inf(head);
+								  print_inf(head);
+								  fflush(stdin);
+								  getch();break;
+						 case 3:  del_inf(head);
+							      printf("删除后的数据\n\n");
+								  print_inf(head);
+								  fflush(stdin);
+								  getch();break;
+						 case 4:  modidy(head);break;
+						 case 5:  insert_inf(head);
+								  printf("插入后的数据\n\n");
+								  print_inf(head);
+								  fflush(stdin);
+								  getch();break;
+						 case 6: count_inf(head);
+								 fflush(stdin);
+								 getch();
+						 case 0:                 ;break;
+						}
+						}
+
+					break;
+		}
+	}
+
+    save_inf(head);
+    
+}

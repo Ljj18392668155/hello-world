@@ -1,0 +1,43 @@
+#include <stdio.h>
+
+void function(char a[],int i,int n);
+void f(char *a,int i,int m);
+
+int main()
+{
+    int n;
+    char a[10]= {'a','b','c','d','e','f','g','h','i','j'};
+    scanf("%d",&n);
+    function(a,0,n);
+    return 0;
+}
+
+void function(char a[],int i,int n)
+{
+    int m;
+    if(i==n)
+    {
+        for (i=0; i<n; i++)
+        {
+            printf("%c",a[i]);
+        }
+        printf("\n");
+    }
+    else
+    {
+        for(m=i;m<n;m++)
+        {
+            f(a,i,m);
+            function(a,i+1,n);
+            f(a,i,m);
+        }
+    }
+}
+
+void f(char *a,int i,int m)
+{
+    char t;
+    t=a[i];
+    a[i]=a[m];
+    a[m]=t;
+}

@@ -1,0 +1,42 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+typedef struct node
+{
+    int data;
+    struct node *next;
+}node, * link;
+
+typedef struct
+{
+  link head;
+  int len;
+}linklist;
+
+int main()
+{
+     linklist l;
+     int n;
+     node *p,*s;
+     l.head=(link)malloc(sizeof(node));
+     p=l.head;
+     p->next=NULL;
+     while (scanf("%d",&n),n)
+     {
+        s=(link)malloc(sizeof(node));
+        p->next=s;
+        s->data=n;
+        p=s;
+        s->next=NULL;
+     }
+     p=l.head;
+     while(p->next!=NULL)
+     {
+          p=p->next;
+          printf("%d\n",p->data);
+     }
+
+
+     return 0;
+}
+

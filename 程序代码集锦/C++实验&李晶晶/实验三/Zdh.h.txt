@@ -1,0 +1,20 @@
+#ifndef _ZDH_H_
+#define _ZDH_H_
+#include "Stu.h"
+class Zdh :public Stu
+{
+ protected://新增成员
+		int m_ZkGrade;//自控成绩
+		char m_MajName[10];//专业名称
+		int m_MajCode;//专业编号
+ public:
+	   Zdh();//默认构造函数
+	   ~Zdh(); // 析构函数
+
+public://新增函数
+	void Show();
+	bool SetZkGrade(int ZkGrade);
+    int GetZkGrade();
+
+};
+#endif

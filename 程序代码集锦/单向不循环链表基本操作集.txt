@@ -1,0 +1,589 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+#define OK 1
+#define ERROR 0
+#define TRUE 1
+#define FALSE 0
+#define INFEASIBLE -1
+#define OVERFLOW -2
+
+typedef int ElemType;
+
+typedef struct LNode {
+    ElemType data;
+    struct LNode * next;
+}LNode, * LinkList;
+
+typedef int Status;
+
+
+int ListLenth(LinkList L);//节点个数(从1计数)
+Status ListInit(LinkList* pL);//初始化是否成功
+Status ListEmpty(LinkList L);//是否为空
+Status GetNode_i(LinkList L,int i,LinkList* q);//是否找到
+Status ElemLocat(LinkList L,ElemType *e,LinkList* Pq);//是否找到
+Status ElemPrior(LinkList L,ElemType *e,LinkList* Pre_e);//是否找到
+Status ElemNext(LinkList L,ElemType *e,LinkList next_e);//是否找到
+Status ListInsert(LinkList* pL,int i,ElemType *e);//是否找到
+Status ListDelete(LinkList* pL,int i,ElemType *e);//是否找到
+void ListDestroy(LinkList* pL);//销毁链表
+void ListClear(LinkList* pL);//置空链表
+void InputNode(LinkList s);//输入节点
+void OutputNode(LinkList s);//输出节点
+void ListCreat_head(LinkList* pL,int n);//头插法
+void ListCreat_tail(LinkList* pL,int n);//尾插法
+void ListTravel(LinkList L);//遍历链表
+void Memu(void);
+
+
+void Memu(void)
+{
+    printf("请输入您想进行的操作序号:\n");
+    printf("1.创建新链表\t2.删除数据\t3.修改数据\n");
+    printf("4.插入数据\t5.输出完整链表\t6.销毁当前链表\n");
+}
+
+Status ListInit(LinkList* pL)
+{   //操作前提:存在一个指向LinkList型指针的指针
+    //操作结果:初始化一个空链表,若成功则返回1,否则返回0
+    *pL=(LinkList)malloc(sizeof(LNode));
+
+    if(!(*pL)){
+        return ERROR;
+    }
+
+    (*pL)->next=NULL;
+    return OK;
+
+}
+
+void ListDestroy(LinkList* pL)
+{   //操作前提:存在一个线性链表L
+    /*操作结果:销毁链表L,
+    即包括头结点在内的所有节点的内存全部都free掉,头结点指针置为空*/
+    LinkList p,q;
+    p=(*pL)->next;
+    while(p){
+        q=p;
+        p=p->next;
+        free(q);
+    }
+
+    free(*pL);
+    (*pL)=NULL;//防止其成为野指针
+
+}
+
+void ListClear(LinkList* pL)
+{   //操作前提:存在线性链表L
+    //操作结果:将链表L重置为空表,即仅含有一个头结点
+    LinkList p,q;
+    p=(*pL)->next;
+    while(p){
+        q=p;
+        p=p->next;
+        free(q);
+    }
+
+    (*pL)->next=NULL;//反正这样正确并且保险
+
+}
+
+Status ListEmpty(LinkList L)
+{   //操作前提:线性表L存在
+    //操作结果:若表为空则返回1,否则返回0
+    if(L->next==NULL){
+        return TRUE;
+    }
+    return FALSE;
+
+}
+
+int ListLenth(LinkList L)
+{   //操作前提:线性表L存在
+    //操作结果:返回链表L中的节点元素个数
+    int i=0;
+    LinkList p=L->next;
+    while(p){
+        p=p->next;
+        i++;
+    }
+
+    return i;
+
+}
+
+Status GetNode_i(LinkList L,int i,LinkList* q)
+{   //操作前提:线性表存在;1<=i<=LinkLenth(L);
+    //操作结果:
+    /*基本方法:当i值不符合要求或者该链表中无该元素时,返回0
+    当成功找到线性表中第i个元素(从1计数)后,用q返回其结点指针*/
+    int j=1;
+    LinkList p=L->next;
+
+    while(p&&j<i) {
+        p=p->next;
+        j++;
+    }
+    if(!p||j>i) {
+        /*未找到:
+        当p为空时,说明遍历链表未找到与i值相等的j,
+        此时必定为i值在定义区间之外*/
+        return ERROR;//无解
+    }
+
+    (*q)=p;/*如果到此处,则p必然非空;则while循环只能由j==i跳出
+                也就是说此时j==i;
+                而开始时p指向第一个节点,j==1;
+                所以当j==i时,p指向第i个节点*/
+    return OK;
+
+}
+
+Status ElemLocat(LinkList L,ElemType *e,LinkList* Pq)
+{   /*操作前提:链表L存在并且e在L中存在
+    操作结果:若链表中不存在e数据,则返回0;
+    当L中存在e,则返回e在L中第一次出现的结点指针*/
+    LinkList p=L->next;
+    while(p) {
+        if(p->data==(*e)) {
+            (*Pq)=p;
+            return OK;
+        }
+        p=p->next;
+    }
+
+    return ERROR;//无解
+
+}
+
+Status ElemPrior(LinkList L,ElemType *e,LinkList *Pre_e)
+{/*操作前提:线性表L存在,并且e是L中的元素;
+    操作结果:若不存在,则返回ERROR(无解),
+    如果存在,则用Pre_e返回其前驱节点*/
+    LinkList p=L;
+    LinkList q=p;//初始化q指针为p的前驱
+    p=p->next;//p指向第1节点
+    while(p) {
+        if(p->data==(*e)) {
+            *Pre_e=q;
+            return OK;
+        }
+        q=p;
+        p=p->next;
+    }
+
+    return ERROR;
+
+}
+
+Status ElemNext(LinkList L,ElemType *e,LinkList next_e)
+{/*操作前提:线性表L存在,并且e为L中的数据元素
+    操作结果:当e对应元素不是最后一个元素时,用next_e返回e对应的后继节点
+            当e对应元素为尾节点时,返回ERROR*/
+    LinkList p=L->next;
+    LinkList q=p->next;
+    while(q) {
+        //p为q前驱,q为p后继
+        if(p->data==(*e)) {
+            next_e=q;
+            return OK;
+        }
+        p=p->next;
+        q=q->next;
+    }
+
+    printf("NextElem:\t所给数据元素的后继结点不存在!\n");
+    return ERROR;
+
+}
+
+Status ListInsert(LinkList* pL,int i,ElemType *e)
+{/*操作前提:线性表L存在,1<=i<=ListLenth(L)+1;
+    操作结果:在L的第i个节点前插入数据为e的新结点
+    若i值不合法或者插入失败,则返回0,
+    基本操作:不论第i个节点是否为空,找到i-1个节点指针*/
+    LinkList p=*pL;
+    LinkList s;
+    int j=0;
+
+    while(p&&j<i-1) {
+        p=p->next;
+        j++;
+    }
+
+    if(!p||j>i-1) {
+       //printf("ListInsert:\tL中无法在第%d个节点前插入数据!\n",i);
+       return OVERFLOW;
+    }
+
+    s=(LinkList)malloc(sizeof(LNode));
+    if(s) {
+        s->data=(*e);
+        s->next=p->next;
+        p->next=s;
+
+        return OK;
+    }
+    else {
+        //printf("ListInsert:\t申请内存出错!\n");
+        return ERROR;
+    }
+}
+
+Status ListDelete(LinkList* pL,int i,ElemType *e)
+{   /*操作前提:线性表L存在并且i值合法,1<=i<=ListLenth(L);
+        操作结果:删除L中第i个位置的结点,并用e返回其值
+        当i值不合法时,返回0
+        基本操作:在第i个指针非空的前提下找到第i-1个节点的指针
+        注意指针的初值即循环控制条件*/
+    LinkList p=*pL;
+    LinkList q;
+    int j=0;
+    if(ListEmpty(*pL)) {
+        return OVERFLOW;
+    }
+    while(p->next&&j<i-1) {
+        //在第i个节点非空的条件下求第i-1个节点指针
+        p=p->next;
+        j++;
+    }
+    if(!(p->next)||j>i-1) {
+        return ERROR;
+    }
+    //如果第i个节点非空
+    q=p->next;//保存第i个节点指针
+    p->next=q->next;
+    (*e)=q->data;
+
+    free(q);
+    q=NULL;
+
+    return OK;
+
+}
+
+void InputNode(LinkList s)
+{//操作前提:存在一个链表的节点指针s
+    //操作结果:根据节点的数据类型量身定制s的输入
+    //当前节点数据只有一个int值
+    scanf("%d",&(s->data));
+}
+
+void OutputNode(LinkList s)
+{//操作前提:存在一个链表的节点指针s
+    //操作结果:根据节点的数据类型量身定制s的输出
+    //当前节点数据只有一个int值
+    printf("%d ",s->data);
+}
+
+void ListCreat_tail(LinkList* pL,int n)
+{/*操作前提:L头结点存在
+    操作结果:创建一个具有n个节点数据的新链表
+    基本方法:尾插法,每次将新节点插入至最后一个节点之后
+    链表将按输入顺序排列*/
+    LinkList p=*pL;
+    LinkList s;
+
+    while(n--) {
+        s=(LinkList)malloc(sizeof(LNode));
+        if(!s) {
+            printf("ListCreat_head:\t申请内存出错!\n");
+            exit(1);
+        }
+        else {
+            InputNode(s);
+            s->next=p->next;
+            p->next=s;
+            p=s;
+        }
+    }
+
+}
+
+void ListCreat_head(LinkList* pL,int n)
+{/*操作前提:链表头结点L存在
+    操作结果:创建具有n个数据节点的新链表
+    基本方法:头插法,每次将新节点插入至头节点之后
+    链表排列顺序与输入的顺序相反*/
+    LinkList p=*pL;
+    LinkList s;
+
+    while(n--) {
+        s=(LinkList)malloc(sizeof(LNode));
+        if(!s) {
+            printf("ListCreat_tail:\t申请内存出错!\n");
+            exit(1);
+        }
+        else {
+            InputNode(s);
+            s->next=p->next;
+            p->next=s;
+        }
+    }
+
+}
+
+void ListTravel(LinkList L)
+{/*操作前提:线性表L存在
+    操作结果:对L进行遍历,而遍历中的具体操作按所需要求更改*/
+    LinkList p=L->next;
+    while(p) {
+        OutputNode(p);
+        p=p->next;
+    }
+    printf("\n");
+}
+
+
+int main ()
+{
+    LNode A,Pre,Q,S;
+    LinkList L=&A,*pL=&L;
+    LinkList q=&Q,Pre_eA=&Pre,s=&S;
+    LinkList *Pq=&q,*Pre_e=&Pre_eA;
+    int n,i,status_i;
+    int Memu_i,Memu_i1;
+    ElemType E,*e=&E;
+
+    while(1) {
+        Memu();
+        scanf("%d",&Memu_i);
+        switch(Memu_i) {
+
+            case 1:
+            //创建新链表
+            if(ListInit(pL)) {
+
+                printf("请输入节点个数:\n");
+                scanf("%d",&n);
+                printf("请选择:\n1.头插法\t2.尾插法\n");
+                scanf("%d",&Memu_i1);
+
+                printf("请依次输入%d个节点的数据:\n",n);
+
+                switch(Memu_i1){
+
+                    case 1:
+                    //头插法
+                        ListCreat_head(pL,n);
+                    break;//1.1
+                    case 2:
+                    //尾插法
+                        ListCreat_tail(pL,n);
+                    break;//1.2
+                }
+            }
+            else {
+                printf("ListInit:\t初始化链表出错!\n");
+            }
+            break;//1
+
+            case 2:
+            //删除数据
+            printf("请选择删除的对象:\n");
+            printf("1.按链表位序查找\t2.按数据匹配查找\n");
+            scanf("%d",&Memu_i1);
+
+            switch(Memu_i1) {
+                case 1:
+                //按位序查找
+                    printf("请输入要查找元素的位序:\n");
+                    scanf("%d",&i);
+                    status_i=ListDelete(pL,i,e);
+                    if(status_i==OK){
+                        printf("ListDelete:\t第%d个数据%d已成功删除!\n",i,*e);
+                    }
+                    else if(status_i==OVERFLOW){
+                        printf("ListDelete:\t该链表为空,无法删除!\n");
+                    }
+                    else if(status_i==ERROR){
+                        printf("ListDelete:\t所给i值不合法,无法删除!\n");
+                    }
+                break;//2.1
+
+                case 2:
+                //按数据匹配查找
+                    printf("请输入要匹配的数据:\n");
+                    scanf("%d",e);
+
+                    status_i=ElemPrior(L,e,Pre_e);
+                    if(status_i) {
+                        s=(*Pre_e)->next;
+                        (*Pre_e)->next=(*Pre_e)->next->next;
+                        free(s);
+                        s=NULL;
+                        printf("PriorElem:\t所给数据已成功删除!\n");
+                    }
+                    else {
+                        printf("PriorElem:\t所给数据不存在!\n");
+                    }
+                break;//2.2
+            }
+            break;//2
+
+            case 3:
+            //修改数据
+            printf("请选择修改的对象:\n");
+            printf("1.按链表位序查找\t2.按数据匹配查找\n");
+            scanf("%d",&Memu_i1);
+
+            switch(Memu_i1) {
+                case 1:
+                //按位序查找然后修改
+                printf("请输入要修改元素的位序:\n");
+                scanf("%d",&i);
+
+                status_i=GetNode_i(L,i,Pq);
+                if(status_i) {
+                    printf("当前数据值为:\t%d\n",(*Pq)->data);
+                    printf("请输入数据的修改值:\n");
+                    scanf("%d",&((*Pq)->data));
+                    printf("GetNode_i:\t数据修改已完成!\n");
+                }
+                else {
+                    printf("GetNode_i:\tL中第%d个元素不存在!\n",i);
+                }
+                break;//3.1
+
+                case 2:
+                //按数据匹配查找然后修改
+                printf("请输入要匹配的数据:\n");
+                scanf("%d",e);
+
+                status_i=ElemLocat(L,e,Pq);
+                if(status_i) {
+                    printf("请输入数据的修改值:\n");
+                    scanf("%d",&((*Pq)->data));
+                    printf("ElemLocat:\t数据修改已完成!\n");
+                }
+                else {
+                    printf("ElemLocat:\tL中不存在所给数据信息!\n");
+                }
+                break;//3.2
+
+            }
+            break;//3
+
+            case 4:
+            //插入数据
+            printf("请输入将新节点插入的位置\n");
+            printf("1.插入到特定位序(前)\t2.插入到特定节点之前\t");
+            printf("3.插入到特定节点之后\n");
+            scanf("%d",&Memu_i1);
+
+            switch(Memu_i1) {
+                case 1:
+                printf("请输入一个位序,新节点将插入到它之前\n");
+                printf("注意:当前链表长度为:\t%d\n",n=ListLenth(L));
+                printf("所以输入数字应小于等于%d+1,并且大于等于1\n",n);
+                scanf("%d",&i);
+                if(i>=1&&i<=n+1) {
+                    printf("请输入新节点数据:\n");
+                    scanf("%d",e);
+
+                    status_i=ListInsert(pL,i,e);
+                    if(status_i==OK) {
+                        printf("ListInsert:\t插入已完成!\n");
+                    }
+                    else if(status_i==OVERFLOW) {
+                        printf("ListInsert:\tL中无法在第%d个节点前插入数据!\n",i);
+                    }
+                    else if(status_i==ERROR) {
+                        printf("ListInsert:\t申请内存出错!\n");
+                    }
+                }
+                else {
+                    printf("main:\t输入i值不合法!\n");
+                }
+                break;//4.1
+
+                case 2:
+                    printf("请输入一个已有数据,新节点将插入到它之前\n");
+                    scanf("%d",e);
+
+                    status_i=ElemPrior(L,e,Pre_e);
+                    if(status_i==OK) {
+                        s=(LinkList)malloc(sizeof(LNode));
+                        if(s) {
+                            printf("请输入新节点数据\n");
+                            InputNode(s);
+                            s->next=(*Pre_e)->next;
+                            (*Pre_e)->next=s;
+                            printf("ElemPrior:\t数据已插入!\n");
+                        }
+                        else {
+                            printf("main:\t申请内存出错!\n");
+                        }
+                    }
+                    else {
+                        printf("ElemPrior:\t未找到给定数据!\n");
+                    }
+                break;//4.2
+
+                case 3:
+                printf("请输入一个已有数据,新节点将插入到它之后\n");
+                scanf("%d",e);
+
+                status_i=ElemLocat(L,e,Pq);
+                if(status_i==OK) {
+                        s=(LinkList)malloc(sizeof(LNode));
+                        if(s){
+                            printf("请输入新节点数据\n");
+                            InputNode(s);
+                            printf("q->data==%d\n",q->data);
+                            s->next=q->next;
+                            q->next=s;
+                            printf("ElemLocat:\t给定数据已插入!\n");
+                        }
+                        else {
+                            printf("main:\t申请内存出错!\n");
+                        }
+                    }
+                     else {
+                        printf("ElemLocat:\t未找到给定数据!\n");
+                    }
+                break;//4.3
+            }
+            break;//4
+
+            case 5:
+                if(L) {
+                    if(!ListEmpty(L)){
+                        ListTravel(L);
+                        printf("链表遍历已完成!\n");
+                    }
+                    else {
+                        printf("链表为空!\n");
+                    }
+                }
+                else {
+                    printf("头节点为空!\n");
+                }
+
+            break;//5
+
+            case 6:
+                printf("确定将链表销毁?\n");
+                printf("1.确定销毁\t2.取消销毁\n");
+                scanf("%d",&status_i);
+                if(status_i==1) {
+                    ListDestroy(pL);
+                    printf("ListDestroy:\t链表已销毁,请重新建立!\n");
+                }
+
+            break;//6
+
+            default :
+                printf("您输入的指令有误!\n");
+            break;
+        }
+
+    }
+
+
+
+
+    return 0;
+}

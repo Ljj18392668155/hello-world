@@ -1,0 +1,41 @@
+#include<iostream>
+#include<string>
+#include "Zdh.h"
+using namespace std;
+
+void Zdh::Show()///显示函数 新加了三个成员后
+{
+	    cout << "姓名：" << m_Name << endl;
+		cout << "性别：" << m_Sex << endl;
+		cout << "出生日期：" << m_Born << endl;
+		cout << "英语成绩：" << m_EngGrade << endl;
+		cout << "数据成绩：" << m_DataGrade << endl;
+		cout << "简历：" << m_Rem << endl;
+		cout << " 简历大小 " << m_RemBytes << endl;
+		cout << "自控成绩：" << m_ZkGrade << endl;
+		cout << "专业名称：" << m_MajName << endl;
+		cout << " 专业编号 " << m_MajCode << endl;	
+}
+bool Zdh:: SetZkGrade(int ZkGrade){//设置自控原理成绩
+	if (ZkGrade <= 100)
+	{
+		m_ZkGrade = ZkGrade;
+		return true;
+	}
+	else return false;
+}
+int Zdh::GetZkGrade(){//返回自控成绩
+	return m_ZkGrade;
+}
+
+Zdh::Zdh() :Stu()     //  构造函数//调用基本类的默认构造函数（这样就避免重复定义姓名、性别等已有默认构造函数的成员）
+{
+	m_ZkGrade = 90;
+	strcpy(m_MajName, "自动化");//专业名称
+	m_MajCode = 010;//自动化专业编号
+}
+Zdh::~Zdh()  // 析构函数，这里对 简历 内存进行释放
+{
+	if (m_Rem != NULL)
+		delete[]m_Rem;
+}

@@ -1,0 +1,21 @@
+#include <stdio.h>
+#include <windows.h>
+void que.pop(int m);
+void que.push(int n);
+int a[10000]=0;
+int top
+
+int main()
+{
+    int b[100];
+    int i=0,j=0;
+    
+
+    }
+     return 0;
+}
+
+void que.push(int m)
+{
+    
+}

@@ -1,0 +1,25 @@
+getchar();
+
+#include<windows.h>
+system("pause")
+
+
+
+
+
+
+
+不要用system("pause")来暂停，可以改用std::cin.get或getchar()
+为何不要用system("pause")?
+有两个理由
+一 ： 不具可移植性
+二 ： 这东西很贵
+
+贵在那里？让我们来看看system("pause")的流程
+1 ： 暂停你的程式
+2 ： 在sub-process中启动OS
+3 ： 寻找要执行的命令并为之分配记忆体
+4 ： 等待输入
+5 ： 回收记忆体
+6 ： 结束OS
+7 ： 继续你的程式 

@@ -1,0 +1,3 @@
+test : test.y
+	win_bison -d test.y
+	gcc -o test.exe test.tab.c test.tab.h

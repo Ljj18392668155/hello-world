@@ -1,0 +1,119 @@
+#include <stdio.h>
+#define Elemtype int
+#define maxsize 100
+
+typedef struct {
+    int i,j;
+    Elemtype e;
+}triple;//矩阵中一个元素的数据
+
+typedef struct {
+    triple date[maxsize+1];
+    int m ,n ,t;
+}tms, *Linklist;//一个矩阵的框架
+
+int main()
+{
+    int s,r,t;//  s是加后的总非零元素
+    int m,n,i,j,e;
+    int u,h;
+    tms x,y,z;
+
+    scanf("%d%d",&x.m,&x.n);
+    scanf("%d%d",&u,&h);
+
+    for(s=1;s<=u;s++){
+        scanf("%d %d %d",&i,&j,&e );//先赋值给变量
+
+            x.date[s].i=i;
+            x.date[s].j=j;
+            x.date[s].e=e;
+        }//在满足是三元组后赋值给矩阵
+
+
+    for(s=1;s<=h;s++){
+        scanf("%d %d %d",&i,&j,&e );//先赋值给变量
+
+            y.date[s].i=i;
+            y.date[s].j=j;
+            y.date[s].e=e;
+        }//在满足是三元组后赋值给矩阵
+
+      for(s=1,m=1,n=1;s<=u+h; s++){
+          if(x.date[m].i>y.date[n].i){
+          z.date[s].i=y.date[n].i;
+          z.date[s].j=y.date[n].j;
+          z.date[s].e=y.date[n].e;
+          n++;
+          }
+           else if(x.date[m].i<y.date[n].i){
+           z.date[s].i=x.date[m].i;
+           z.date[s].j=x.date[m].j;
+           z.date[s].e=x.date[m].e;
+           m++;
+           }
+             else {
+                 if(x.date[m].j>y.date[n].j){
+                     z.date[s].i=y.date[n].i;
+                     z.date[s].j=y.date[n].j;
+                     z.date[s].e=y.date[n].e;
+                     n++;
+                }
+                    else if(x.date[m].j<y.date[n].j)
+                    {
+                    z.date[s].i=x.date[m].i;
+                    z.date[s].j=x.date[m].j;
+                    z.date[s].e=x.date[m].e;
+                    m++;
+                    }
+
+                      else {
+                    z.date[s].i=x.date[m].i+y.date[n].i;
+                    z.date[s].j=x.date[m].j+y.date[n].j;
+                    z.date[s].e=x.date[m].e+y.date[n].e;
+                    m++,n++;
+                    }
+                    }
+
+                    //之后的情况都将退出循环
+                    if(m>u){
+                    if(n>h){
+                    break;
+                    }
+                    else {while(n<=h){
+                      s++  ;
+                      z.date[s].i=y.date[n].i;
+                      z.date[s].j=y.date[n].j;
+                      z.date[s].e=y.date[n].e;
+                      n++;
+                    }
+
+                    }
+                     break;
+                    }
+
+                    else if(n>h){
+                    if(m>u){
+                    break;
+                    }
+                    else {while( m<=u){
+                      s++  ;
+                      z.date[s].i=x.date[m].i;
+                      z.date[s].j=x.date[m].j;
+                      z.date[s].e=x.date[m].e;
+                      m++;
+                    }
+                    }
+                     break ;
+                     }
+                    break ;
+                     }
+
+    t=s;
+    for(r=1;r<=s;r++){
+        printf("%d %d %d\n",z.date[r].i,z.date[r].j,z.date[r].e);
+    }
+printf("%d%d",s,t);//s一直等于1
+    return 0;
+}
+

@@ -1,0 +1,53 @@
+%{
+ #include <ctype.h>
+  #include <stdio.h>
+  #include <math.h>
+%}
+%token NUMBER
+%left '+' '-' '*' '/' 
+%token EOL ABS
+%%
+
+line :
+      | line expression '\n'                 {printf("%d\n", $2 ); }
+      | line '\n'                             {printf("0\n"); }
+      ;
+expression:  expression '+' factor { $$ = $1 + $3; }
+           |  expression '-' factor { $$ = $1 - $3; }
+           |  '(' expression ')'     { $$ = $2; }
+           |  factor/* NUMBER              */     { $$ = $1; }
+            ;
+
+factor: term {$$=$1;}
+       |factor '*' term {$$ = $1 * $3;}
+       |factor '/' term {$$ = $1 / $3;}
+       ;
+
+term: NUMBER {$$ = $1 ;}
+      |ABS term {$$ = $2 >= 0 ? $2 :-$2 ;}
+      ; 
+
+ 
+%%
+int
+
+yylex() {  //词法分析
+  int c;
+  c = getchar();
+  if ( isdigit( c ) ) {
+   yylval = c - '0';
+   return NUMBER;
+  }
+ return( c );
+ }
+
+/////////////////////////////////////////
+ main()
+{
+     yyparse();//词法分析
+}
+
+yyerror(char* msg)
+{
+   
+}

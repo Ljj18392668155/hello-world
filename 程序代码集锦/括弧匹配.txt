@@ -1,0 +1,117 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+typedef struct Stack {
+    char  c;
+   struct Stack * next;
+}Stack,* PStack;
+typedef char Elemtype;
+/*
+int InitStack(PStack *L);//初始化空栈
+int Push(PStack L,Elemtype ch);//元素ch入栈
+int StackIsEmpty(PStack L);//判空
+int GetTop(PStack L,Elemtype *ch);//取栈顶元素*ch
+int Pop(PStack *L);//出栈*/
+
+
+int InitStack(PStack *L)
+{//若初始化分配内存失败,返回0;否则返回1
+    (*L)=(PStack )malloc(sizeof(Stack));
+    if(*L!=NULL) {
+        (*L)->next=NULL;
+        return 1;
+    }
+    return 0;
+}
+
+int Push(PStack L,Elemtype ch)
+{//若分配内存失败返回0,否则返回1;
+    //在栈存在的前提下,将元素ch入栈
+    PStack s=(PStack )malloc(sizeof(Stack));
+    if(s!=NULL){
+        s->c=ch;
+        s->next=L->next;
+        L->next=s;
+        return 1;
+    }
+    return 0;
+}
+
+int StackIsEmpty(PStack L)
+{//在栈L存在的前提下,若L为空,返回真;否则返回假
+    if(L->next==NULL) {
+        return 1;
+    }
+    return 0;
+}
+
+int GetTop(PStack L,Elemtype *ch)
+{//若堆栈为空,返回0;否则返回1
+    //堆栈非空时,用*ch返回 栈顶元素的值
+    if(L->next==NULL) {
+        return 0;
+    }
+    (*ch)=L->next->c;
+    return 1;
+}
+
+int Pop(PStack *L)
+{//若堆栈为空,返回0;否则返回1
+    //堆栈非空时,将栈顶元素删除
+    if((*L)->next==NULL){
+        return 0;
+    }
+    PStack p=(*L)->next;
+    (*L)->next=p->next;
+    free(p);
+    p=NULL;
+    return 1;
+}
+
+int main()
+{
+    Elemtype ch,Sc,*pSc=&Sc;
+    PStack L=NULL,*pL=&L;
+
+    if(InitStack(pL)==0){
+        printf("初始化空栈错\n");//xunhuan初始化空栈
+        exit(1);
+    }
+
+    while( (ch=getchar())&&(ch!='\n') ) {/*只能在输入一段文本后才能进行判断是否匹配
+                                        而非即时匹配报错*/
+        if(  (ch=='(') ||(ch=='{') ||(ch=='[')   )
+        {
+            if(Push(L,ch)==0) {     //左括号入栈
+                printf("压栈出错!\n");
+                exit(1);
+            }
+        }//左括号if
+        else if(  (ch==')') ||
+                  (ch=='}') ||
+                  (ch==']')   )     //右括号检查匹配与否
+        {
+            GetTop(L,pSc);
+            if(  (ch==')' && Sc=='(') ||
+                 (ch=='}' && Sc=='{') ||
+                 (ch==']' && Sc=='[')   )
+            {
+                 Pop(pL);           //左右括号匹配,出栈
+            }
+            else {
+                printf("No\n");     //不匹配,报错
+                return 0;
+            }
+        }//右括号else if
+    }//while
+    if(StackIsEmpty(L)) {
+        printf("Yes\n");            /*循环后栈为空,左括号无剩余,
+                            并且前面的操作保证了凡是出栈的都是左右括号相匹配的,
+                                    故录入的该组数据匹配*/
+    }
+    else {
+        printf("No\n");        //栈非空,左括号有剩余,不匹配,报错
+    }
+
+    return 0;
+}

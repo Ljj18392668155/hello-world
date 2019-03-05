@@ -1,0 +1,72 @@
+#include <stdio.h>
+#define Elemtype int
+#define maxsize 100
+
+typedef struct {
+    int i,j;
+    Elemtype e;
+}triple;//矩阵中一个元素的数据
+
+typedef struct {
+    triple date[maxsize+1];
+    int m ,n ,t;
+}tms, *Linklist;//一个矩阵的框架
+
+void transposetms(tms x, tms  *y)//在主函数中分配指针空间
+{
+    int q,p,l;
+
+    y->m=x.n;
+    y->n=x.m;
+    y->t=x.t;
+
+    if(y->t!=0){
+        q=0;
+        for(l=0;l<x.n;++l){//从第一列开始往you遍历,再开始第二列
+            for(p=0;p<x.t;++p){//共p个数据，最后是第p-1个数
+                if(x.date[p].j==l){//假如是同一列的数据
+                    y->date[q].i=x.date[p].j;
+                    y->date[q].j=x.date[p].i;
+                    y->date[q].e=x.date[p].e;
+
+                    q++;
+                }//每满足一次if条件就会转置一个元素
+            }//以上函数既确保了转置又保证了输出顺序
+        }
+    }
+}
+//转置矩阵的函数
+
+
+
+
+int main()
+{
+    int s,r;
+    int i,j,e;
+    tms x,y,*w=&y;
+
+    scanf("%d%d",&x.m,&x.n);
+
+    for(s=0;;s++){
+        scanf("%d %d %d",&i,&j,&e );//先赋值给变量
+        if(i==0&&j==0&&e==0) {
+            break;
+        }
+        else {
+            x.date[s].i=i;
+            x.date[s].j=j;
+            x.date[s].e=e;
+        }//在满足是三元组后赋值给矩阵
+    }
+    x.t=s;//s是非零元个数
+
+    transposetms(x,w);//调用函数
+
+    for(r=0;r<s;r++ ){
+        printf("%d %d %d\n",y.date[r].i,y.date[r].j,y.date[r].e);
+    }
+
+    return 0;
+}
+

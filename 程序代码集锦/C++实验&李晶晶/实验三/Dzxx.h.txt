@@ -1,0 +1,20 @@
+#ifndef _DZXX_H_
+#define _DZXX_H_
+#include "Stu.h"
+class Dzxx :public Stu//继承得到电子信息类
+{
+protected://新增成员
+	int m_XhGrade;//信号成绩
+	char m_MajName[10];//专业名称
+	int m_MajCode;//专业编号
+public:
+	Dzxx();//默认构造函数
+	~Dzxx(); // 析构函数
+
+public://新增函数
+	void Show();
+	bool SetXhGrade(int XhGrade);//设置信号系统成绩
+	int GetXhGrade();//返回信号成绩
+
+};
+#endif

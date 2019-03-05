@@ -1,0 +1,37 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+
+int main()
+{
+    int a[7][7],i=0;
+    for(i=0,j=0;i<8;i++)
+    {
+        for(j=0;j<8;j++)
+        {
+            a[i][j]=0;
+        }
+    }
+    
+    printf("Hello world!\n");
+    return 0;
+}
+
+int row_up(int a[][],int i)
+{
+  int n=0,sum=0;
+  for (n=0;n<8;n++) 
+  {
+      sum=a[i][n]+sum;
+  }
+  return sum;
+}
+int col_up(int a[][],int j)
+{
+  int n=0,sum=0;
+  for (n=0;n<8;n++) 
+  {
+      sum=a[n][j]+sum;
+  }
+  return sum;
+}

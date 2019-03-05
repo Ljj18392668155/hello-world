@@ -1,0 +1,32 @@
+#ifndef _STU_H_
+#define _STU_H_
+class Stu
+{
+protected:
+	char m_Name[11];
+	char m_Sex[3];
+	char m_Born[12];
+	int m_EngGrade;
+	int m_DataGrade;
+	char *m_Rem;
+	unsigned int m_RemBytes;
+
+public:
+	void Show();
+	unsigned int GetRemBytes();
+	bool SetName(char *Name);//Ãû×Ö
+	char *GetName();
+	bool SetSex(char *Sex);//ÐÔ±ð
+	char *GetSex();
+	bool SetBorn(char *Born);
+	char *GetBorn();
+	bool SetEngGrade(int EngGrade);
+	int GetEngGrade();
+	bool SetDataGrade(int DataGrade);
+	int GetDataGrade();
+	bool SetRem(char *Rem);
+	char *GetRem();
+
+};
+#endif
+////////////////////////////////////////////////////

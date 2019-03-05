@@ -1,0 +1,23 @@
+// 程序三.cpp : 定义控制台应用程序的入口点。
+//
+
+#include "stdafx.h"
+#include<iostream>
+using namespace std;
+
+
+void main(int argc, _TCHAR* argv[])
+{
+	char Name[10];
+	int Age;
+	cin>> Name;
+	cout<< Name << endl;
+	cin >> Age;
+	cout << Age << endl;
+	cout << "Hello World!" << endl;
+	cout << 23 << endl;
+	cout << 28.2 << endl;
+	cout << "名字:" << Name << ",年龄：" << Age << "岁，工资：" << 3000 << "元" << endl;
+	cin >> Age;
+}
+

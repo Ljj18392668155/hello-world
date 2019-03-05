@@ -1,0 +1,170 @@
+#include <iostream>
+#include <string>
+#include "Stu.h"
+using namespace std;
+
+void Stu::Show()////////////显示函数
+{
+	cout << "姓名：" << m_Name << endl;
+	cout << "性别：" << m_Sex << endl;
+	cout << "出生日期：" << m_Born << endl;
+	cout << "英语成绩：" << m_EngGrade << endl;
+	cout << "数据成绩：" << m_DataGrade << endl;
+	cout << "简历：" << m_Rem << endl;
+	cout <<" 简历大小 "<< m_RemBytes << endl;
+}
+
+
+unsigned int Stu::GetRemBytes()//返回简历大小
+{
+	return m_RemBytes;
+}
+
+bool Stu:: SetName(char *Name)//名字
+{
+	if (strlen(Name) >= 10)
+		return false;
+	else
+		strcpy(m_Name, Name);
+	return true;
+}
+char * Stu:: GetName()
+{
+	return m_Name;
+}
+
+
+bool Stu::SetSex(char *Sex)//性别
+{
+	if (strcmp("男",Sex) == 0 || strcmp("女",Sex) == 0){
+		strcpy(m_Sex, Sex);
+		return true;
+	}
+	else
+		return false;
+}
+char * Stu::GetSex(){
+	return m_Sex;
+}
+
+
+bool Stu::SetBorn(char *Born)//出生日期
+{
+	if (strlen(Born) > 12)
+		return false;
+	else
+		strcpy(m_Born, Born);
+	return true;
+}
+char * Stu::GetBorn(){
+	return m_Born;
+}
+
+bool Stu::SetEngGrade(int EngGrade)//英语成绩
+{
+	if (EngGrade <= 100)
+	{
+    m_EngGrade = EngGrade;
+	return true;
+	}	
+	else
+		return false;
+}
+int Stu::GetEngGrade(){
+return m_EngGrade;
+}
+
+
+bool Stu::SetDataGrade(int DataGrade)//数据成绩
+{
+	if (DataGrade <= 100){
+		m_DataGrade = DataGrade;
+		return true;
+	}
+	else return false;
+}
+int Stu::GetDataGrade(){
+	return m_DataGrade;
+}
+
+
+bool Stu::SetRem(char *Rem)//简历
+{
+	if (m_Rem != NULL) 
+		delete[]m_Rem;//释放空间
+	if (Rem != NULL)
+	{
+		int Len = strlen(Rem);
+		char *p = new char[Len + 1];//申请内存
+		if (p == NULL)
+			return false;
+
+		m_RemBytes = Len;
+		m_Rem = p;
+		strcpy(m_Rem, Rem);
+	}
+	 else
+	 {
+		 m_Rem = NULL;
+		 m_RemBytes = 0;
+	 }
+	 return true;
+
+}
+char * Stu::GetRem(){
+	return m_Rem;
+}
+
+
+Stu::Stu()//默认构造函数
+{
+	m_Name[0]=0;
+	strcpy(m_Sex,"男");
+	strcpy(m_Born,"1997.02.24");
+	m_EngGrade=90;
+	m_DataGrade=90;
+	m_Rem="无";//简历为NULL时直接Show函数程序会崩溃,这里为了测试拷贝构造函数让其不为NULL
+	//strcpy(m_Rem,"无");//简历为NULL时直接Show函数程序会崩溃，调用strcpy在构造对象时直接崩溃（还不知道原因）
+	//m_Rem = NULL;//简历为NULL时直接Show函数程序会崩溃
+	m_RemBytes=0;
+}
+/*Stu::Stu(char* Name = "LiJingJing", char* Sex = "女", char* Born = "1997.02.24", int EngGrade = 90, int DataGrade = 90, char* Rem, unsigned int RemBytes = 0)//带参构造函数 ( 这里就不写这个函数，书上都有，使用默认构造函数就行
+{
+}*/
+
+
+Stu::~Stu()//析构函数，这里对 简历 内存进行释放
+{
+	if (m_Rem != NULL)
+		delete[]m_Rem;
+}
+
+Stu::Stu(const Stu &s)//拷贝构造函数，这里是将对象s拷到目标对象中，也不用人工调用
+{
+	strcpy(m_Name, s.m_Name);
+	strcpy(m_Sex, s.m_Sex);
+	strcpy(m_Born, s.m_Born);
+	m_EngGrade = s.m_EngGrade;
+	m_DataGrade = s.m_DataGrade;
+	if (s.m_Rem != NULL){
+		m_RemBytes = s.m_RemBytes;
+		m_Rem = new char[m_RemBytes + 1];//申请内存，与对象s不指向同一内存空间
+		strcpy(m_Rem, s.m_Rem);
+	}
+	else{
+		m_Rem = NULL;
+		m_RemBytes = 0;
+	}
+}
+//////////////////
+
+
+int main()//主函数
+{
+	Stu stu;
+	cout << stu.GetEngGrade() << endl;
+	stu.Show();
+	Stu stu1 = stu;//调用拷贝构造函数
+		stu1.Show();
+		return 0;
+}

@@ -1,0 +1,67 @@
+#include <stdio.h>
+
+void  GBpaixu(int a[],int n,int s,int r);
+void merge(int a[],int s,int r,int m);
+
+
+int main()
+{
+    int n,a[100],i=0;
+     scanf("%d",&n);
+    for(i=0; i<n; i++)
+    {
+        scanf("%d",&a[i]);
+    }
+    GBpaixu(a,n,0,n-1);
+    for(i=0;i<n;i++)
+    {
+        printf("%d",a[i]);
+    }
+    return 0;
+}
+
+
+
+void  GBpaixu(int a[],int n,int s,int r)
+{
+    int m;
+    m=(s+r)/2;
+    if (s==r)
+    {
+        a[s]=a[r];
+    }
+    else
+    {
+        GBpaixu(a,n/2,s,m);
+        GBpaixu(a,m-s-n/2,m+1,r);
+        merge(a,s,r,m);
+    }
+}
+
+void merge(int a[],int s,int r,int m)
+{
+    int start=s,k,i,j,b[100];
+    for (k=s,j=m+1; s<=m&&j<=r; k++) //书上是++k
+    {
+        if (a[s]<a[j]) b[k]=a[s++];
+       else b[k]=a[j++];
+    }
+    if(s<=m)
+    {
+        for(k=k; s<=m; s++,k++) //书上k不用+1
+        {
+            b[k]=a[s];
+        }
+    }
+    else
+    {
+        for(k=k; j<=r; j++,k++) //书上k不用+1
+        {
+            b[k]=a[j];
+        }
+    }
+    for(i=start;i<=r;i++)
+    {
+        a[i]=b[i];
+    }
+}
